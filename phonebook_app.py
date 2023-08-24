@@ -3,38 +3,53 @@ import json
 from typing import List, Dict, Any
 
 
+class PhonebookDataHandler:
+    def __init__(self, filename: str) -> None:
+        """
+        Инициализация объекта PhonebookDataHandler.
+
+        :param filename: Имя файла для хранения записей.
+        """
+        self.filename = filename
+
+    def load_records(self) -> List[Dict[str, Any]]:
+        """
+        Загрузка записей из файла.
+
+        :return: Список записей из файла.
+        """
+        records = []
+        if os.path.exists(self.filename):
+            with open(self.filename, "r", encoding="utf-8") as file:
+                try:
+                    records = json.load(file)
+                except json.JSONDecodeError:
+                    pass
+        return records
+
+    def save_records(self, records: List[Dict[str, Any]]) -> None:
+        """
+        Сохранение записей в файл.
+
+        :param records: Список записей для сохранения.
+        """
+        with open(self.filename, "w", encoding="utf-8") as file:
+            json.dump(records, file, indent=4, ensure_ascii=False)
+
+
 class Phonebook:
     """
     Класс для работы с телефонным справочником.
     """
 
-    def __init__(self, filename: str) -> None:
+    def __init__(self, data_handler: PhonebookDataHandler) -> None:
         """
         Инициализация объекта Phonebook.
 
-        :param filename: Имя файла для хранения записей.
+        :param data_handler: Обработчик данных для работы с записями.
         """
-        self.filename = filename
-        self.records = []
-        self.load_records()
-
-    def load_records(self) -> None:
-        """
-        Загрузка записей из файла.
-        """
-        if os.path.exists(self.filename):
-            with open(self.filename, "r", encoding="utf-8") as file:
-                try:
-                    self.records = json.load(file)
-                except json.JSONDecodeError:
-                    self.records = []
-
-    def save_records(self) -> None:
-        """
-        Сохранение записей в файл.
-        """
-        with open(self.filename, "w", encoding="utf-8") as file:
-            json.dump(self.records, file, indent=4, ensure_ascii=False)
+        self.data_handler = data_handler
+        self.records = self.data_handler.load_records()
 
     def display_records(self, page_num: int, records_per_page: int) -> None:
         """
@@ -60,7 +75,7 @@ class Phonebook:
         :param record: Словарь с данными записи.
         """
         self.records.append(record)
-        self.save_records()
+        self.data_handler.save_records(self.records)
 
     def edit_record(self, record_idx: int, new_record: Dict[str, Any]) -> None:
         """
@@ -70,7 +85,7 @@ class Phonebook:
         :param new_record: Новые данные записи.
         """
         self.records[record_idx] = new_record
-        self.save_records()
+        self.data_handler.save_records(self.records)
 
     def search_records(self, search_term: str) -> List[Dict[str, Any]]:
         """
@@ -139,7 +154,7 @@ class PhonebookApp:
                 else:
                     print("Записи не найдены.")
             elif choice == "5":
-                self.phonebook.save_records()
+                self.phonebook.data_handler.save_records(self.phonebook.records)
                 print("Данные сохранены. До скорых встреч.")
                 break
             else:
@@ -168,7 +183,8 @@ class PhonebookApp:
 
 
 def main() -> None:
-    phonebook = Phonebook("phonebook.json")
+    data_handler = PhonebookDataHandler("phonebook.json")
+    phonebook = Phonebook(data_handler)
     app = PhonebookApp(phonebook)
     app.run()
 
