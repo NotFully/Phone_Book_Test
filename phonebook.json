@@ -1,0 +1,26 @@
+[
+    {
+        "last_name": "Иванов",
+        "first_name": "Александр",
+        "middle_name": "Сергеевич",
+        "organization": "ООО ТехноКомп",
+        "work_phone": "8 (495) 123-45-67",
+        "personal_phone": "+7 (901) 987-65-43"
+    },
+    {
+        "last_name": "Петрова",
+        "first_name": "Елена",
+        "middle_name": "Андреевна",
+        "organization": "ООО ЦМ",
+        "work_phone": "8 (800) 888 88 88",
+        "personal_phone": "+7 (911) 234 12 12"
+    },
+    {
+        "last_name": "Смирнова",
+        "first_name": "Мария",
+        "middle_name": "Ивановна",
+        "organization": "Государственный университет",
+        "work_phone": "8 (800) 123-45-67",
+        "personal_phone": "+7 (900) 111-22-33"
+    }
+]
